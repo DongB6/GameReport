@@ -17,7 +17,7 @@ class Deck {
     
     
   }
-  
+    //Cards to be added 
    public void addCard(Card c, boolean chosen) { 
      c.selected = false;
      c.scale = 1; 

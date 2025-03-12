@@ -16,6 +16,8 @@ public class Projectiles{
      rocket = loadImage("rocket.png");      
    } 
    
+   public void chosenProjectile() {
+   }
    
    public void drawProjectile() {
      image(rocket, xPos, yPos, imageSize, imageSize);

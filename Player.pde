@@ -28,7 +28,8 @@ public class Player {
   } 
   
   
-  
+  public void blockIndicator() {
+  } 
  //Next Task 
  //Implement Gravity 
  
@@ -71,6 +72,8 @@ public class Player {
       xPos += xSpd; 
     } 
   } 
+  
+ 
  public void pressedKey() {
     
     if(key == 'w' || key == 'W') {

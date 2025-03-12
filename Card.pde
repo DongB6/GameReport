@@ -13,6 +13,10 @@ class Card {
   int draws;
   int actions;
   
+  
+  
+  //Cards are in Main as of now, will move to Card. 
+  
   //Card Constructor 
   public Card(String title, String text) { 
     this.title = title;
