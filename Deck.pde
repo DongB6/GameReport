@@ -8,7 +8,8 @@ class Deck {
   float xPos, yPos; 
   int type; 
   float scale;
-  
+    float cardXSize = 350, cardYSize = 400;
+
   //Deck Constructor
   public Deck(float xPos, float yPos, int type) {
     this.xPos = xPos;

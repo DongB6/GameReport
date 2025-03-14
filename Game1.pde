@@ -2,10 +2,8 @@
 
 ArrayList<Player> player = new ArrayList<>(); 
 ArrayList<Projectiles> projectile = new ArrayList<Projectiles>(); 
+ArrayList<Card> cards = new ArrayList<Card>(); 
 
-float cardXSize = 200, cardYSize = 300;
-
-PImage chem, comp, gameDev, trig, ai; 
 
 //Images
 PImage cross; 
@@ -16,12 +14,30 @@ void setup() {
   
   imageMode(CENTER); 
   cross = loadImage("crosshair.png");
-  chem = loadImage("chem.jpg");
-  comp = loadImage("comp.jpg");
-  gameDev = loadImage("gamedev.jpg");
-  trig = loadImage("trig.jpg");
-  ai = loadImage("ai.jpg");
   
+  cards.add(new Card("Chemistry", "Bottles of Chemicals ", width / 2, 300));
+  cards.add(new Card("Computer Science", " ", width / 2 - 600, 300));
+  cards.add(new Card("Trigonometry", " ", width / 2 + 600, 300));
+  cards.add(new Card("Game Development", " ", width / 2 + 300, 800));
+  cards.add(new Card("Artificial Intelligence", " ", width / 2 - 300, 800));
+  
+  /*
+   rect(width/2-200,100,cardXSize,cardYSize,50); 
+    image(chem, width/2-25, 225, 300, 200); 
+  
+    rect(width/2- 800,100,cardXSize,cardYSize,50);
+    image(comp, width/2-625, 225, 300,200); 
+    
+    rect(width/2 + 400,100,cardXSize,cardYSize,50);
+    image(trig, width/2+575, 225, 300, 200); 
+    
+    rect(width/2+100, 600, cardXSize, cardYSize,50); 
+    image(gameDev, width/2+275,725, 300,200); 
+    
+    rect(width/2-500,600,cardXSize,cardYSize,50); 
+    image(ai, width/2-325, 725, 300,200); 
+  
+  */
   
   fullScreen();
 } 
@@ -30,76 +46,87 @@ void draw() {
   //Change//Test
   background(0);
   
-  playerDraw(); 
-  playerCross(); 
-  drawProjectiles(); 
+ 
   
-  //Setup for Cards
-  fill(255);
-  stroke(255,0,0);
-  strokeWeight(4);
-  
-  //Smaller Copy 
-  rect(25,height/2-100,250,300,50); 
-  image(chem, 150, height/2, 250, 200); 
-
-  rect(450,height/2-100,225,300,50);
-  image(comp, 575, height/2, 250,200); 
-  
-  rect(850,height/2-100,225,300,50);
-  image(trig, 975, height/2, 250, 200); 
-  
-  rect(1250,height/2-100,225,300,50); 
-  image(gameDev, 1375,height/2, 250,200); 
-  
-  rect(1650,height/2 -100,225,300,50); 
-  image(ai, 1775, height/2, 250,200); 
-  
-  
-  //Bigger Copy 
-  //Screen Spec not large enough to load 
-  //1-1-1-1-1 Formatt
-  //rect(25,100,350,400,50); 
-  //image(chem, 150, height/2, 250, 200); 
-
-  //rect(450,100,350,400,50);
-  //image(comp, 575, height/2, 250,200); 
-  
-  //rect(850,100,350,400,50);
-  //image(trig, 975, height/2, 250, 200); 
-  
-  //rect(1250,100,350,400,50); 
-  //image(gameDev, 1375,height/2, 250,200); 
-  
-  //rect(1650,100,350,400,50); 
-  //image(ai, 1775, height/2, 250,200); 
-  
-  //New Format of 3 - 2
-  
-  rect(width/2-200,100,350,400,50); 
-  image(chem, 150, height/2, 250, 200); 
-
-  rect(width/2- 800,100,350,400,50);
-  image(comp, 575, height/2, 250,200); 
-  
-  rect(width/2 + 400,100,350,400,50);
-  image(trig, 975, height/2, 250, 200); 
-  
-  //rect(1250,100,350,400,50); 
-  //image(gameDev, 1375,height/2, 250,200); 
-  
-  //rect(1650,100,350,400,50); 
-  //image(ai, 1775, height/2, 250,200); 
+   if(cardScreen()){
+     player.clear();
+     cardSelection(); 
+   }else{
+      playerDraw(); 
+      playerCross(); 
+      drawProjectiles(); 
+   } 
   
  
+}
+
+public boolean game() {
+  return true; 
+} 
+//Boolean to ensure that player will not be shown in cardScreen to reduce memory
+public boolean cardScreen() {
+  return true; 
 } 
 //Card Sketch
-//public void cardArt() {
-//  fill(255);
-//  stroke(0);
-//  strokeWeight(3);
- 
-//} 
+public void cardSelection() {
+  player.clear(); 
+  // Draw each card
+  for (Card card : cards) {
+    PImage image = null;  
+    switch (card.title) {
+      case "Chemistry": 
+        image = card.chem; 
+        break;
+      case "Computer Science": 
+        image = card.comp; 
+        break;
+      case "Trigonometry": 
+        image = card.trig; 
+        break;
+      case "Game Development": 
+        image = card.gameDev; 
+        break;
+      case "Artificial Intelligence": 
+        image = card.ai; 
+        break;
+    }
+    card.drawsCard(image);
+  }
+} 
+
+void mouseMoved() {
+  // Check if the mouse is over any card
+  for (Card c : cards) {
+    if (c.underCursor()) {
+      c.selected = true;
+    } else {
+      c.selected = false;
+    }
+  }
+}
+
+public void drawScore() {
+  //Top Right Corner of Screen
+  //Functionality similar to the health Meter, but it only increments one when a round is over 
+  
+} 
+public void previewCard() {
+  //Smaller Format of 1-1-1-1-1
+  //rect(25,height/2-100,250,300,50); 
+  //image(chem, 150, height/2, 250, 200); 
+
+  //rect(450,height/2-100,225,300,50);
+  //image(comp, 575, height/2, 250,200); 
+  
+  //rect(850,height/2-100,225,300,50);
+  //image(trig, 975, height/2, 250, 200); 
+  
+  //rect(1250,height/2-100,225,300,50); 
+  //image(gameDev, 1375,height/2, 250,200); 
+  
+  //rect(1650,height/2 -100,225,300,50); 
+  //image(ai, 1775, height/2, 250,200); 
+} 
 
 //Player CrossHair 
 public void playerCross() { 
