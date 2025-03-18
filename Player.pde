@@ -12,6 +12,8 @@ public class Player {
   boolean jumping = false; 
   
   boolean up, down, left, right, jumpKey; 
+  
+  //Player Constructor 
   public Player(float xPos, float yPos) {
     
     this.xPos = xPos;

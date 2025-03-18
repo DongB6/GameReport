@@ -6,7 +6,7 @@ public class Projectiles{
    float imageSize = 100; 
    PImage rocket; 
    
-
+  //Projectile Constructor 
    public Projectiles(float xPos, float yPos, float imageSize) {
      this.xPos = xPos;
      this.yPos = yPos;

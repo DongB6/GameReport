@@ -21,23 +21,6 @@ void setup() {
   cards.add(new Card("Game Development", " ", width / 2 + 300, 800));
   cards.add(new Card("Artificial Intelligence", " ", width / 2 - 300, 800));
   
-  /*
-   rect(width/2-200,100,cardXSize,cardYSize,50); 
-    image(chem, width/2-25, 225, 300, 200); 
-  
-    rect(width/2- 800,100,cardXSize,cardYSize,50);
-    image(comp, width/2-625, 225, 300,200); 
-    
-    rect(width/2 + 400,100,cardXSize,cardYSize,50);
-    image(trig, width/2+575, 225, 300, 200); 
-    
-    rect(width/2+100, 600, cardXSize, cardYSize,50); 
-    image(gameDev, width/2+275,725, 300,200); 
-    
-    rect(width/2-500,600,cardXSize,cardYSize,50); 
-    image(ai, width/2-325, 725, 300,200); 
-  
-  */
   
   fullScreen();
 } 

@@ -37,6 +37,8 @@ class Card {
     ai = loadImage("ai.jpg");
   } 
   
+  
+  //Card Constructor 
   public Card() {
     imageMode(CENTER); 
     chem = loadImage("chem.jpg");

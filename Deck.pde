@@ -19,15 +19,15 @@ class Deck {
     
   }
     //Cards to be added 
-   public void addCard(Card c, boolean chosen) { 
-     c.selected = false;
-     c.scale = 1; 
-     c.yPos = height-cardYSize/2;
-     cards.add(c);
+   //public void addCard(Card c, boolean chosen) { 
+   //  c.selected = false;
+   //  c.scale = 1; 
+   //  c.yPos = height-cardYSize/2;
+   //  cards.add(c);
      
-     //if(chosen) { 
-     //} 
-   } 
+   //  //if(chosen) { 
+   //  //} 
+   //} 
    
    public Card drawCard() { 
      return cards.remove(0); 
