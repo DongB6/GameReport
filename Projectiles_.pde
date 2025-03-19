@@ -2,9 +2,12 @@ public class Projectiles{
   
    //ArrayList<PImage> images = new ArrayList<PImage>(); 
    float xPos, yPos; 
-   float xSpd = 5, ySpd = 5; 
+   float xSpd = 25, ySpd = -35; 
    float imageSize = 100; 
-   PImage rocket; 
+   PImage rocket, pot1; 
+     float gravity = 0.75f; 
+     float velocity; 
+
    
   //Projectile Constructor 
    public Projectiles(float xPos, float yPos, float imageSize) {
@@ -13,19 +16,26 @@ public class Projectiles{
      this.imageSize = imageSize;
      
      imageMode(CENTER);
-     rocket = loadImage("rocket.png");      
+     rocket = loadImage("rocket.png");     
+     pot1 = loadImage("pot1.png"); 
    } 
+   
+   
+   
+  
    
    public void chosenProjectile() {
    }
    
    public void drawProjectile() {
-     image(rocket, xPos, yPos, imageSize, imageSize);
+     image(pot1, xPos, yPos, imageSize, imageSize);
      moveProjectile(); 
    } 
    
    public void moveProjectile() {
      xPos += xSpd;
+     yPos += ySpd; 
+     ySpd += gravity; 
    } 
    
    public boolean caughtPlayer() { 

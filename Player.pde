@@ -33,7 +33,7 @@ public class Player {
   public void blockIndicator() {
   } 
  //Next Task 
- //Implement Gravity 
+
  
  public void gravity() {
    if(yPos < height - pSize/2){
@@ -126,6 +126,14 @@ public class Player {
       //xPos -= xSpd; 
     } 
   } 
- 
-  
 } 
+
+  
+  // public boolean collisionDetect(Player p){
+  //  float distance = dist(xPos, yPos, p.xPos, p.yPos); 
+  //  //Returns either true or false if chaser  has collided with another chaser 
+  //  return distance < ((pSize/2 + p.pSize/2)/2); 
+  //}
+ public void playerObst(){
+   
+ } 

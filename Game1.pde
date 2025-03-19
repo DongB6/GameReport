@@ -27,18 +27,23 @@ void setup() {
 
 void draw() { 
   //Change//Test
-  background(0);
+  background(50);
   
  
   
-   if(cardScreen()){
-     player.clear();
-     cardSelection(); 
-   }else{
-      playerDraw(); 
-      playerCross(); 
-      drawProjectiles(); 
-   } 
+  playerDraw();
+  playerCross(); 
+  drawProjectiles(); 
+  
+  map1(); 
+   //if(cardScreen()){
+   //  player.clear();
+   //  cardSelection(); 
+   //}else{
+   //   playerDraw(); 
+   //   playerCross(); 
+   //   drawProjectiles(); 
+   //} 
   
  
 }
@@ -117,12 +122,32 @@ public void playerCross() {
   image(cross, mouseX, mouseY, 50,50);
 } 
 
+public void directionIndicator() {
+  for(int i = 0; i < player.size(); i++) {
+    Player p = player.get(i); 
+    float angle = atan2(mouseY - p.yPos, mouseX - p.xPos);
+    
+    pushMatrix();
+    translate(p.xPos, p.yPos);
+    rotate(angle);
+    
+   
+    fill(255,0,0);
+    noStroke();
+    triangle(20,0,-20,-20,-20,20); 
+    //triangle(20,0,-10,-10,-10,10);
+    popMatrix(); 
+  } 
+} 
+
 public void playerDraw() { 
   for(int i = 0; i < player.size(); i++) {
     Player p = player.get(i); 
     p.drawPlayer(); 
     //p.movePlayer(); 
   } 
+  
+  directionIndicator();
 } 
 
 public void playerCount(){
@@ -159,7 +184,7 @@ public void drawProjectiles() {
 public void mouseClicked() { 
   //Allows for projectile to spawn from playe 
   for(int i = 0; i < player.size(); i++) {
-        Player p = player.get(i);
+      Player p = player.get(i);
       projectile.add(new Projectiles(p.xPos, p.yPos, p.pSize)); 
    
   }
@@ -168,4 +193,22 @@ public void startingScreen() {
 } 
 
 public void options() {
+} 
+
+public void map1() {
+  fill(213,255,246);
+  stroke(255);
+  strokeWeight(1);
+  
+  rect(200,200,200,400); 
+  rect(700, 150, 500, 100); 
+  rect(1500, 200, 200, 400); 
+  rect(500,750,900,100);
+  rect(600, 1000, 700, 200); 
+  rect(600, 450, 200, 50); 
+  rect(1100, 450, 200, 50); 
+  
+  //Spawner Positions 
+  rect(200,1000, 200, 300); 
+  rect(1500, 1000, 200, 300); 
 } 
