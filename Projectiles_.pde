@@ -5,14 +5,16 @@ public class Projectiles{
    float xSpd = 25, ySpd = -35; 
    float imageSize = 100; 
    PImage rocket, pot1; 
-     float gravity = 0.75f; 
-     float velocity; 
+   float gravity = 0.75f; 
+   float velocity; 
 
    
   //Projectile Constructor 
-   public Projectiles(float xPos, float yPos, float imageSize) {
+   public Projectiles(float xPos, float yPos, float xSpd, float ySpd, float imageSize) {
      this.xPos = xPos;
      this.yPos = yPos;
+     this.xSpd = xSpd; 
+     this.ySpd = ySpd; 
      this.imageSize = imageSize;
      
      imageMode(CENTER);

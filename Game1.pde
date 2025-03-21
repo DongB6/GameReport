@@ -3,14 +3,24 @@
 ArrayList<Player> player = new ArrayList<>(); 
 ArrayList<Projectiles> projectile = new ArrayList<Projectiles>(); 
 ArrayList<Card> cards = new ArrayList<Card>(); 
+ArrayList<Block> blocks = new ArrayList<Block>(); 
+ArrayList<CollidableObject> objects = new ArrayList<CollidableObject>(); 
+Player p;  
+
+boolean up, down, left, right, jumpKey; 
 
 
 //Images
 PImage cross; 
 
+
 void setup() {
-  size(1200,800);
-  playerCount(); 
+  size(1100,800);
+  
+   p = new Player(); // Initialize the Player object
+  player.add(p); // Add the Player to the player list
+  objects.add(p); // Add the Player to the objects list
+ // playerCount(); 
   
   imageMode(CENTER); 
   cross = loadImage("crosshair.png");
@@ -21,32 +31,41 @@ void setup() {
   cards.add(new Card("Game Development", " ", width / 2 + 300, 800));
   cards.add(new Card("Artificial Intelligence", " ", width / 2 - 300, 800));
   
-  
+  rectMode(CENTER); 
+  playerCross(); 
   fullScreen();
+  map1(); 
+  border(); 
 } 
 
 void draw() { 
   //Change//Test
   background(50);
   
- 
-  
-  playerDraw();
-  playerCross(); 
-  drawProjectiles(); 
-  
-  map1(); 
+    drawMap(); 
+    handleCollisions(); 
+
+    playerDraw();
+
+    drawProjectiles(); 
    //if(cardScreen()){
    //  player.clear();
    //  cardSelection(); 
    //}else{
    //   playerDraw(); 
-   //   playerCross(); 
    //   drawProjectiles(); 
    //} 
   
  
 }
+
+void handleCollisions()
+{
+  for(CollidableObject co: objects)
+    for(Block b: blocks)
+      co.bounce( b.sideHitBy( co ), b );
+}
+
 
 public boolean game() {
   return true; 
@@ -100,26 +119,14 @@ public void drawScore() {
 } 
 public void previewCard() {
   //Smaller Format of 1-1-1-1-1
-  //rect(25,height/2-100,250,300,50); 
-  //image(chem, 150, height/2, 250, 200); 
-
-  //rect(450,height/2-100,225,300,50);
-  //image(comp, 575, height/2, 250,200); 
   
-  //rect(850,height/2-100,225,300,50);
-  //image(trig, 975, height/2, 250, 200); 
-  
-  //rect(1250,height/2-100,225,300,50); 
-  //image(gameDev, 1375,height/2, 250,200); 
-  
-  //rect(1650,height/2 -100,225,300,50); 
-  //image(ai, 1775, height/2, 250,200); 
 } 
 
 //Player CrossHair 
 public void playerCross() { 
-  stroke(0); 
-  image(cross, mouseX, mouseY, 50,50);
+  //stroke(0); 
+  cursor(cross, mouseX, mouseY);
+  //image(cross, mouseX, mouseY, 50,50); 
 } 
 
 public void directionIndicator() {
@@ -142,36 +149,25 @@ public void directionIndicator() {
 
 public void playerDraw() { 
   for(int i = 0; i < player.size(); i++) {
-    Player p = player.get(i); 
     p.drawPlayer(); 
-    //p.movePlayer(); 
+    
+    //Collision for player againist blocks 
+    //p.playerObst(blocks); 
   } 
   
   directionIndicator();
 } 
 
-public void playerCount(){
-  float xPos = height/2;
-  float yPos = width/2; 
+//public void playerCount(){
+//  float xPos = height/2;
+//  float yPos = width/2; 
   
-  //for(int i = 0; i < 1; i++) {
-    player.add(new Player(xPos, yPos));
-  //} 
-} 
+//  //for(int i = 0; i < 1; i++) {
+//    player.add(new Player(width/2, height/2));
+//  //} 
+//} 
 
-public void keyPressed() {
-  for (int i = 0; i < player.size(); i++) {
-    Player p = player.get(i);
-    p.pressedKey();
-  }
-}
 
-public void keyReleased() {
-  for (int i = 0; i < player.size(); i++) {
-    Player p = player.get(i);
-    p.releaseKey();
-  }
-}
 
 public void drawProjectiles() { 
   for(int i = 0; i < projectile.size(); i++) {
@@ -185,7 +181,9 @@ public void mouseClicked() {
   //Allows for projectile to spawn from playe 
   for(int i = 0; i < player.size(); i++) {
       Player p = player.get(i);
-      projectile.add(new Projectiles(p.xPos, p.yPos, p.pSize)); 
+      float xSpd = (mouseX - p.xPos) * 0.1;
+      float ySpd = (mouseY - p.yPos) * 0.1; 
+      projectile.add(new Projectiles(p.xPos, p.yPos, xSpd, ySpd,p.pSize)); 
    
   }
 } 
@@ -195,20 +193,107 @@ public void startingScreen() {
 public void options() {
 } 
 
-public void map1() {
-  fill(213,255,246);
-  stroke(255);
-  strokeWeight(1);
+//Method for drawin the map based on the arraylist 
+public void drawMap() {
+ // map1();
+  //border(); 
+  for(Block b: blocks) {
+    b.displayBlocks(); 
+  } 
   
-  rect(200,200,200,400); 
-  rect(700, 150, 500, 100); 
-  rect(1500, 200, 200, 400); 
-  rect(500,750,900,100);
-  rect(600, 1000, 700, 200); 
-  rect(600, 450, 200, 50); 
-  rect(1100, 450, 200, 50); 
-  
-  //Spawner Positions 
-  rect(200,1000, 200, 300); 
-  rect(1500, 1000, 200, 300); 
 } 
+
+public void border() {
+  int borderColor = color(255,0,0); 
+  //Top
+  blocks.add(new Block(100, 10, width+1800, 10, borderColor));
+  
+  //Bottom
+  blocks.add(new Block(100, height-5, width+1800, 10, borderColor));
+  
+  //Left 
+  blocks.add(new Block(1, 0, 10, height+12000, borderColor));
+  
+  //Right 
+  blocks.add(new Block(width+1, 0, 10, height+12000, borderColor)); 
+  
+  
+}
+public void map1() {
+  int blockColor = color(213, 255, 246); 
+  
+  
+  /*
+   blocks.add(new Block(200,200,200,400, blockColor)); 
+  blocks.add(new Block(700, 150, 500, 100, blockColor)); 
+  blocks.add(new Block(1500, 200, 200, 400, blockColor)); 
+  
+  blocks.add(new Block(500,750,900,100, blockColor));
+  blocks.add(new Block(600, 1000, 700, 200, blockColor)); 
+  blocks.add(new Block(600, 450, 200, 50, blockColor)); 
+  blocks.add(new Block(1100, 450, 200, 50, blockColor)); 
+  
+  */
+  //Side
+  blocks.add(new Block(300,300,200,400, blockColor)); 
+  blocks.add(new Block(1600, 300, 200, 400, blockColor)); 
+
+  //Middle platform ----
+  blocks.add(new Block(950, 300, 500, 100, blockColor)); 
+  
+  
+  //Upper long platform 
+  blocks.add(new Block(950,800,1000,100, blockColor));
+  blocks.add(new Block(950,1100, 700, 200, blockColor)); 
+  
+  //Small platforms 
+  blocks.add(new Block(700, 550, 200, 50, blockColor)); 
+  blocks.add(new Block(1200, 550, 200, 50, blockColor)); 
+  
+  ////Spawner Positions 
+  blocks.add(new Block(300,1100, 200, 200, blockColor)); 
+  blocks.add(new Block(1600,1100, 200, 200, blockColor)); 
+ 
+ 
+  
+  
+} 
+
+void keyPressed()
+{
+  //Directions pressed
+  if( key == 'w' || key == 'W' || keyCode == UP )    up = true;
+  if( key == 's' || key == 'S' || keyCode == DOWN )  down = true;
+  if( key == 'a' || key == 'A' || keyCode == LEFT )  left = true;
+  if( key == 'd' || key == 'D' || keyCode == RIGHT ) right = true;
+  
+  if( key == ' ' && p.canJump )
+    p.jump();
+}
+
+void keyReleased()
+{
+  //Directions un-pressed
+  if( key == 'w' || key == 'W' || keyCode == UP )    up = false;
+  if( key == 's' || key == 'S' || keyCode == DOWN )  down = false;
+  if( key == 'a' || key == 'A' || keyCode == LEFT ) { left = false; p.leftGrip = false; }
+  if( key == 'd' || key == 'D' || keyCode == RIGHT ){ right = false; p.rightGrip = false; }
+}
+
+
+
+/*
+public void keyPressed() {
+  for (int i = 0; i < player.size(); i++) {
+    Player p = player.get(i);
+    p.pressedKey();
+  }
+}
+
+public void keyReleased() {
+  for (int i = 0; i < player.size(); i++) {
+    Player p = player.get(i);
+    p.releaseKey();
+  }
+}
+*/ 
