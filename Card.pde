@@ -17,6 +17,7 @@ class Card {
   
   
   
+  
   //Cards are in Main as of now, will move to Card. 
   
   //Card Constructor 
@@ -67,7 +68,7 @@ class Card {
     strokeWeight(4);
     
     rect(xPos - cardXSize / 2, yPos() - cardYSize / 2, cardXSize, cardYSize, 50);
-    image(image, xPos, yPos(), 300, 200);     
+    image(image, xPos-175, yPos()-200, 300, 200);     
   } 
   
   /*

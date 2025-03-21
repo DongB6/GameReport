@@ -12,6 +12,7 @@ public class Player extends CollidableObject{
   
   float maxHealth = 100;
   float health = 100; 
+  float healthPercent;
   
   //boolean jumping = false; 
   //boolean wallJumping = false; 
@@ -39,10 +40,10 @@ public class Player extends CollidableObject{
   } 
   
   public void healthBar() {
-    float barWidth = 50;
+    float barWidth = 100;
     float barHeight = 5; 
-    float healthPercent = health/maxHealth;
-    float barX = xPos - barWidth/2;
+     healthPercent = health/maxHealth;
+    float barX = xPos - barWidth/2 + 50;
     float barY = yPos - pSize/2 -10; 
     
     fill(255,0,0);
@@ -50,6 +51,14 @@ public class Player extends CollidableObject{
     
     fill(0,255,0); 
     rect(barX, barY, barWidth * healthPercent, barHeight);
+  } 
+  
+  public boolean alive() {
+    if(healthPercent == 0) {
+      return false; 
+    }else {
+      return true; 
+    } 
   } 
   public void drawPlayer() { 
     fill(0,0,255);
@@ -59,38 +68,18 @@ public class Player extends CollidableObject{
     healthBar(); 
   } 
   
+  public void damage(float damage) {
+    health -= damage; 
+    System.out.println("Damaged"); 
+    if(health <= 0) {
+        health = 0; 
+    } 
+  } 
   
   public void blockIndicator() {
   } 
- //Next Task 
-
  
- //public void gravity() {
- //  if(yPos < height - pSize/2){
- //    ySpd += gravity; 
- //    yPos += ySpd; 
- //    jumping = true; 
- //    //println("Gravity"); 
- //  }else {
- //    ySpd = 0; 
- //    yPos = height - pSize/2;
- //    jumping = false;
- //  } 
- //} 
- 
- //public void gravity() { 
- //  if(!wallJumping) {
- //    if(!jumping) {
- //      ySpd = 0; 
- //    } else {
- //    ySpd += gravity;
- //  } 
- // }
- //  yPos += ySpd; 
- //} 
- 
- 
-  void jump()
+  public void jump()
   {
     if( !canJump ) return;
     
@@ -103,42 +92,8 @@ public class Player extends CollidableObject{
     
     ySpd = -30;
   }
- //public void jump() {
- //  if(!jumping || wallJumping) {
- //    ySpd = jumpHeight;
- //    if(wallJumping) {
- //      if(leftWall) {
- //        xSpd = 10; 
- //      }else if(rightWall) {
- //        xSpd = 10; 
- //      } 
- //      wallJumping = false; 
- //    } 
- //    jumping = true; 
- //  } 
- //} 
-
- //public void movePlayer() { 
- //  //These conditionals ensure that the player positions are within the size/boundary 
- //   if(up && yPos > 0 + pSize/2) { 
- //     yPos -= ySpd; 
- //   } 
- //   if(left && xPos > 0 + pSize/2) {
- //     xPos -= xSpd;
- //   } 
-    
- //   //Needs fixing 
- //   if(down && yPos < height - pSize/2) { 
- //     yPos -= ySpd; 
- //   } 
-    
- //   if(right && xPos < width - pSize/2) { 
- //     xPos += xSpd; 
- //   } 
- // } 
-  
-   void movePlayer()
-  {
+ 
+   public void movePlayer() {
     if( left ) xSpd-=1;
     if( right )xSpd+=1;
     
@@ -166,12 +121,7 @@ public class Player extends CollidableObject{
     if( abs(ySpd) > 5 ) canJump = leftGrip = rightGrip = false;
   }
  
-  // public boolean collisionDetect(Player p){
-  //  float distance = dist(xPos, yPos, p.xPos, p.yPos); 
-  //  //Returns either true or false if chaser  has collided with another chaser 
-  //  return distance < ((pSize/2 + p.pSize/2)/2); 
-  //}
-  
+
   /*
   public void playerObst(ArrayList<Block> blocks) {
     leftWall = false; 

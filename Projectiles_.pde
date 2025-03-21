@@ -2,10 +2,10 @@ public class Projectiles{
   
    //ArrayList<PImage> images = new ArrayList<PImage>(); 
    float xPos, yPos; 
-   float xSpd = 25, ySpd = -35; 
+   float xSpd = 0, ySpd = 0; 
    float imageSize = 100; 
    PImage rocket, pot1; 
-   float gravity = 0.75f; 
+   float gravity = 0.1f; 
    float velocity; 
 
    
@@ -22,10 +22,6 @@ public class Projectiles{
      pot1 = loadImage("pot1.png"); 
    } 
    
-   
-   
-  
-   
    public void chosenProjectile() {
    }
    
@@ -38,14 +34,27 @@ public class Projectiles{
      xPos += xSpd;
      yPos += ySpd; 
      ySpd += gravity; 
+     
+     xSpd *= 0.90; 
+     ySpd *= 0.90; 
    } 
    
    public boolean caughtPlayer() { 
-    if(dist(mouseX, mouseY, xPos, yPos) < ((imageSize/2) + 12)){
+    if(dist(mouseX, mouseY, xPos, yPos) < ((imageSize/2) + 40)){
       return true;
     } 
       return false; 
   } 
   
+  //public boolean caughtPlayer(Player player) {
+  //  float distance = dist(xPos, yPos, player.xPos, player.yPos);
+  //  return distance < (imageSize / 2 + player.pSize / 2) + 12;
+  //}
+  
+  public boolean caughtBlock(Block b) {
+    boolean xCollision = xPos + imageSize/2 > b.xPos && yPos - imageSize/2 < b.xPos + b.xSize;
+    boolean yCollision = yPos + imageSize/2 > b.yPos && yPos - imageSize/2 < b.yPos + b.ySize; 
+    return xCollision && yCollision; 
+} 
   
 } 

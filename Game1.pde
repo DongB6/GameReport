@@ -6,9 +6,13 @@ ArrayList<Card> cards = new ArrayList<Card>();
 ArrayList<Block> blocks = new ArrayList<Block>(); 
 ArrayList<CollidableObject> objects = new ArrayList<CollidableObject>(); 
 Player p;  
+//Card to track selected Card
+Card selectedCard = null;
+
+
 
 boolean up, down, left, right, jumpKey; 
-
+String gameState = "playing"; 
 
 //Images
 PImage cross; 
@@ -25,50 +29,103 @@ void setup() {
   imageMode(CENTER); 
   cross = loadImage("crosshair.png");
   
-  cards.add(new Card("Chemistry", "Bottles of Chemicals ", width / 2, 300));
-  cards.add(new Card("Computer Science", " ", width / 2 - 600, 300));
-  cards.add(new Card("Trigonometry", " ", width / 2 + 600, 300));
-  cards.add(new Card("Game Development", " ", width / 2 + 300, 800));
-  cards.add(new Card("Artificial Intelligence", " ", width / 2 - 300, 800));
+  cards.add(new Card("Chemistry", "Bottles of Chemicals ", width / 2+200, 600));
+  cards.add(new Card("Computer Science", " ", width / 2 - 400, 600));
+  cards.add(new Card("Trigonometry", " ", width / 2 + 800, 600));
+  cards.add(new Card("Game Development", " ", width / 2 + 500, 1100));
+  cards.add(new Card("Artificial Intelligence", " ", width / 2 - 100, 1100));
   
   rectMode(CENTER); 
   playerCross(); 
   fullScreen();
   map1(); 
   border(); 
+
 } 
 
-void draw() { 
+public void draw() { 
   //Change//Test
   background(50);
-  
-    drawMap(); 
-    handleCollisions(); 
 
-    playerDraw();
-
-    drawProjectiles(); 
-   //if(cardScreen()){
-   //  player.clear();
-   //  cardSelection(); 
-   //}else{
-   //   playerDraw(); 
-   //   drawProjectiles(); 
-   //} 
-  
- 
+    //Switch Statement to swap the screens 
+    switch(gameState) {
+      case "playing":
+      drawMap(); 
+      handleCollisions(); 
+      handleProjectileCollisions(); 
+      playerDraw();
+      drawProjectiles(); 
+      
+      if(!p.alive()){ 
+          gameState = "roundend"; 
+      } 
+      break;
+      
+      case "roundend":
+        roundEnd();
+        gameState = "selectcards";
+        break;
+        
+       case "selectcards":
+         clearScreen();
+         cardSelection();
+         previewCard();
+         break; 
+    }
 }
 
-void handleCollisions()
+
+public void handleCollisions()
 {
   for(CollidableObject co: objects)
     for(Block b: blocks)
       co.bounce( b.sideHitBy( co ), b );
 }
 
+public void handleProjectileCollisions() {
+  for(int i = projectile.size()-1; i >= 0; i--) {
+    Projectiles pjs = projectile.get(i);
+    for(Player p: player) {
+      if(pjs.caughtPlayer()){
+        p.damage(100);
+        projectile.remove(i); 
+        return; 
+      } 
+    } 
+   
+  
+  //Collision Handle with block
+  for(Block b : blocks) {
+    if(pjs.caughtBlock(b)){
+      projectile.remove(i);
+      return; 
+    } 
+  } 
+  }
+} 
 
+public void clearScreen() {
+  player.clear();
+  projectile.clear();
+  cards.clear();
+  blocks.clear();
+  objects.clear();
+  
+  background(50);
+} 
 public boolean game() {
   return true; 
+} 
+
+public void gameScreen() {
+  //Resets the player and hte map
+  p = new Player();
+  player.add(p);
+  objects.add(p);
+  map1();
+  border(); 
+  
+  //background(50); 
 } 
 //Boolean to ensure that player will not be shown in cardScreen to reduce memory
 public boolean cardScreen() {
@@ -76,6 +133,8 @@ public boolean cardScreen() {
 } 
 //Card Sketch
 public void cardSelection() {
+  if(cardScreen()) {
+    
   player.clear(); 
   // Draw each card
   for (Card card : cards) {
@@ -99,9 +158,10 @@ public void cardSelection() {
     }
     card.drawsCard(image);
   }
+  }
 } 
 
-void mouseMoved() {
+public void mouseMoved() {
   // Check if the mouse is over any card
   for (Card c : cards) {
     if (c.underCursor()) {
@@ -117,10 +177,7 @@ public void drawScore() {
   //Functionality similar to the health Meter, but it only increments one when a round is over 
   
 } 
-public void previewCard() {
-  //Smaller Format of 1-1-1-1-1
-  
-} 
+
 
 //Player CrossHair 
 public void playerCross() { 
@@ -158,17 +215,6 @@ public void playerDraw() {
   directionIndicator();
 } 
 
-//public void playerCount(){
-//  float xPos = height/2;
-//  float yPos = width/2; 
-  
-//  //for(int i = 0; i < 1; i++) {
-//    player.add(new Player(width/2, height/2));
-//  //} 
-//} 
-
-
-
 public void drawProjectiles() { 
   for(int i = 0; i < projectile.size(); i++) {
     Projectiles ps = projectile.get(i);
@@ -178,21 +224,90 @@ public void drawProjectiles() {
 
 //Spawns Projectiles
 public void mouseClicked() { 
+  
+  //Card Selection Check
+  if(gameState.equals("selectcards")){
+    for(Card c: cards) {
+      if(c.underCursor()){
+        selectedCard = c; 
+        gameState = "playing"; 
+        gameScreen(); 
+        break; 
+      } 
+    } 
+  }
   //Allows for projectile to spawn from playe 
   for(int i = 0; i < player.size(); i++) {
       Player p = player.get(i);
-      float xSpd = (mouseX - p.xPos) * 0.1;
-      float ySpd = (mouseY - p.yPos) * 0.1; 
-      projectile.add(new Projectiles(p.xPos, p.yPos, xSpd, ySpd,p.pSize)); 
+      
+      float angle = atan2(mouseY - p.yPos, mouseX - p.xPos);
+      
+      float pOffSet = p.pSize/2 + 50; 
+      
+      float spawnXPos = p.xPos + cos(angle) * pOffSet;
+      float spawnYPos = p.yPos + sin(angle) * pOffSet; 
+      
+      //float xSpd = (mouseX - p.xPos) * 0.1;
+      //float ySpd = (mouseY - p.yPos) * 0.1; 
+      
+      float xSpd = cos(angle) * 10;
+      float ySpd = sin(angle) * 10; 
+      
+      projectile.add(new Projectiles(spawnXPos, spawnYPos-10, xSpd, ySpd,p.pSize)); 
    
   }
+}
+
+public void previewCard() {
+  //Smaller Format of 1-1-1-1-1
+  if(selectedCard != null) {
+      PImage image = null;
+      switch(selectedCard.title) {
+        case "Chemistry": 
+        image = selectedCard.chem; 
+        break;
+      case "Computer Science": 
+        image = selectedCard.comp; 
+        break;
+      case "Trigonometry": 
+        image = selectedCard.trig; 
+        break;
+      case "Game Development": 
+        image = selectedCard.gameDev; 
+        break;
+      case "Artificial Intelligence": 
+        image = selectedCard.ai; 
+        break;
+    }
+    if (image != null) {
+      imageMode(CORNER);
+      image(image, width - 100, 20, 80, 80); // Draw the image at the top right corner in a smaller size
+    }
+  }
+      
 } 
+
 public void startingScreen() { 
 } 
 
-public void options() {
-} 
 
+public void roundEnd() {
+    
+    fill(0,0,0, 200); 
+    rect(0, 0, width+2000, height+1500);
+    
+    textSize(200);
+    fill(255); 
+    text("POINT", width/2-750, height/2-360);
+    player.clear();
+    projectile.clear();
+    
+    fill(#0347FF);
+    circle(width/2+300, height/2-425,200);
+    
+    cardScreen(); 
+    
+} 
 //Method for drawin the map based on the arraylist 
 public void drawMap() {
  // map1();
@@ -221,19 +336,6 @@ public void border() {
 }
 public void map1() {
   int blockColor = color(213, 255, 246); 
-  
-  
-  /*
-   blocks.add(new Block(200,200,200,400, blockColor)); 
-  blocks.add(new Block(700, 150, 500, 100, blockColor)); 
-  blocks.add(new Block(1500, 200, 200, 400, blockColor)); 
-  
-  blocks.add(new Block(500,750,900,100, blockColor));
-  blocks.add(new Block(600, 1000, 700, 200, blockColor)); 
-  blocks.add(new Block(600, 450, 200, 50, blockColor)); 
-  blocks.add(new Block(1100, 450, 200, 50, blockColor)); 
-  
-  */
   //Side
   blocks.add(new Block(300,300,200,400, blockColor)); 
   blocks.add(new Block(1600, 300, 200, 400, blockColor)); 
@@ -253,13 +355,9 @@ public void map1() {
   ////Spawner Positions 
   blocks.add(new Block(300,1100, 200, 200, blockColor)); 
   blocks.add(new Block(1600,1100, 200, 200, blockColor)); 
- 
- 
-  
-  
 } 
 
-void keyPressed()
+public void keyPressed()
 {
   //Directions pressed
   if( key == 'w' || key == 'W' || keyCode == UP )    up = true;
@@ -271,7 +369,7 @@ void keyPressed()
     p.jump();
 }
 
-void keyReleased()
+public void keyReleased()
 {
   //Directions un-pressed
   if( key == 'w' || key == 'W' || keyCode == UP )    up = false;
@@ -279,21 +377,3 @@ void keyReleased()
   if( key == 'a' || key == 'A' || keyCode == LEFT ) { left = false; p.leftGrip = false; }
   if( key == 'd' || key == 'D' || keyCode == RIGHT ){ right = false; p.rightGrip = false; }
 }
-
-
-
-/*
-public void keyPressed() {
-  for (int i = 0; i < player.size(); i++) {
-    Player p = player.get(i);
-    p.pressedKey();
-  }
-}
-
-public void keyReleased() {
-  for (int i = 0; i < player.size(); i++) {
-    Player p = player.get(i);
-    p.releaseKey();
-  }
-}
-*/ 
