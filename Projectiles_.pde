@@ -1,4 +1,4 @@
-public class Projectiles{
+public class Projectiles extends CollidableObject{
   
    //ArrayList<PImage> images = new ArrayList<PImage>(); 
    float xPos, yPos; 
@@ -20,8 +20,12 @@ public class Projectiles{
      imageMode(CENTER);
      rocket = loadImage("rocket.png");     
      pot1 = loadImage("pot1.png"); 
+     
+     behavior = 1;
+     objects.add(this); 
    } 
    
+   //Was supposed to have a method that can change between the different projectiles. The different projectiles would have been the different subject item pngs. 
    public void chosenProjectile() {
    }
    
@@ -30,6 +34,7 @@ public class Projectiles{
      moveProjectile(); 
    } 
    
+   //Movement method for the projectile with gravity 
    public void moveProjectile() {
      xPos += xSpd;
      yPos += ySpd; 
@@ -39,22 +44,21 @@ public class Projectiles{
      ySpd *= 0.90; 
    } 
    
+   //This method works 
+   //Method if player is within the distance of player 
    public boolean caughtPlayer() { 
     if(dist(mouseX, mouseY, xPos, yPos) < ((imageSize/2) + 40)){
       return true;
     } 
       return false; 
   } 
-  
-  //public boolean caughtPlayer(Player player) {
-  //  float distance = dist(xPos, yPos, player.xPos, player.yPos);
-  //  return distance < (imageSize / 2 + player.pSize / 2) + 12;
-  //}
-  
+ 
+  //Method if projectile is caught Block
+  //Error on it, doesn't really work correctly, they fall through the blocks 
   public boolean caughtBlock(Block b) {
     boolean xCollision = xPos + imageSize/2 > b.xPos && yPos - imageSize/2 < b.xPos + b.xSize;
     boolean yCollision = yPos + imageSize/2 > b.yPos && yPos - imageSize/2 < b.yPos + b.ySize; 
     return xCollision && yCollision; 
-} 
+  } 
   
 } 

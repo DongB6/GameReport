@@ -1,12 +1,5 @@
 public class Player extends CollidableObject{ 
   
-  
-  //Test
-  //float xPos;
-  //float yPos; 
-  //float pSize; 
-  //float xSpd = 15;
-  //float ySpd = 0; 
   float gravity = 0.44f; 
   float jumpHeight = -35; 
   
@@ -14,31 +7,27 @@ public class Player extends CollidableObject{
   float health = 100; 
   float healthPercent;
   
-  //boolean jumping = false; 
-  //boolean wallJumping = false; 
-  //boolean leftWall = false;
-  //boolean rightWall = false; 
-  
-  
   //Player Constructor 
   public Player() {
     
-  xPos = width/2;
-  yPos = height/2; 
-  pSize = 75; 
+   xPos = width/2;
+   yPos = height/2; 
+   pSize = 75; 
    this.xSpd = 5;
-    this.ySpd = 0;
-    this.removed = false;
-    this.canJump = false;
-    this.leftGrip = false;
-    this.rightGrip = false;
+   this.ySpd = 0;
+   this.removed = false;
+   this.canJump = false;
+   this.leftGrip = false;
+   this.rightGrip = false;
       
-    behavior = 0;
+   behavior = 0;
     
-    objects.add( this ); 
+   objects.add( this ); 
     
   } 
   
+  
+  //Draws healthbar above the player 
   public void healthBar() {
     float barWidth = 100;
     float barHeight = 5; 
@@ -53,13 +42,13 @@ public class Player extends CollidableObject{
     rect(barX, barY, barWidth * healthPercent, barHeight);
   } 
   
+  //Method that checks if the player is alive 
   public boolean alive() {
-    if(healthPercent == 0) {
-      return false; 
-    }else {
-      return true; 
-    } 
+    //Simplifed boolean return for if Healthpercent is above 0 
+   return healthPercent > 0; 
   } 
+  
+  //Draws player 
   public void drawPlayer() { 
     fill(0,0,255);
     circle(xPos, yPos, pSize); 
@@ -68,6 +57,7 @@ public class Player extends CollidableObject{
     healthBar(); 
   } 
   
+  //Damage methodd to player 
   public void damage(float damage) {
     health -= damage; 
     System.out.println("Damaged"); 
@@ -76,13 +66,16 @@ public class Player extends CollidableObject{
     } 
   } 
   
+  //Was suppose to have a block ability in order to deflect attacks and to have certain blocks 
   public void blockIndicator() {
   } 
  
   public void jump()
   {
-    if( !canJump ) return;
     
+    //Attemps at debugging jumping glitch 
+    if( !canJump ) return;
+
     canJump = false;
     
     //Wall Jump
@@ -92,15 +85,15 @@ public class Player extends CollidableObject{
     
     ySpd = -30;
   }
- 
+   //Moves Player with the left, right, up, and down and wall grips
    public void movePlayer() {
     if( left ) xSpd-=1;
     if( right )xSpd+=1;
     
     //Gravity
-    if(!canJump) {
+    //if(!canJump) {
       ySpd += 1;
-    }
+    //}
     
     //Friction
     xSpd *= 0.95;
@@ -120,54 +113,4 @@ public class Player extends CollidableObject{
     //A few frames of Coyote time
     if( abs(ySpd) > 5 ) canJump = leftGrip = rightGrip = false;
   }
- 
-
-  /*
-  public void playerObst(ArrayList<Block> blocks) {
-    leftWall = false; 
-    rightWall = false; 
-
-    for (Block block : blocks) { 
-        boolean xCollision = xPos + pSize / 2 > block.xPos && xPos - pSize / 2 < block.xPos + block.w; 
-        boolean yCollision = yPos + pSize / 2 > block.yPos && yPos - pSize / 2 < block.yPos + block.h; 
-
-        if (xCollision && yCollision) {
-            float overlapTop = yPos + pSize / 2 - block.y;
-            float overlapBottom = block.y + block.h - (yPos - pSize / 2);
-            float overlapLeft = xPos + pSize / 2 - block.x;
-            float overlapRight = block.x + block.w - (xPos - pSize / 2);
-
-            // Determine the smallest overlap to resolve collision properly
-            if (overlapTop < overlapBottom && overlapTop < overlapLeft && overlapTop < overlapRight) {
-                // Player landed on top of block
-                yPos = block.y - pSize / 2;
-                ySpd = 0;
-                jumping = false;
-            } else if (overlapBottom < overlapTop && overlapBottom < overlapLeft && overlapBottom < overlapRight) {
-                // Player hit bottom of block
-                yPos = block.y + block.h + pSize / 2;
-                ySpd = 0;
-            } else if (overlapLeft < overlapRight) {
-                // Player hit left wall
-                xPos = block.x - pSize / 2;
-                leftWall = true;
-                if (jumping) {
-                    wallJumping = true; // Allow wall jumping only if jumping
-                }
-            } else {
-                // Player hit right wall
-                xPos = block.x + block.w + pSize / 2;
-                rightWall = true;
-                if (jumping) {
-                    wallJumping = true;
-                }
-            }
-        }
-    }
-    
-
-}
-*/ 
-
- 
  } 

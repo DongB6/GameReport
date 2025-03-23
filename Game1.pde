@@ -1,40 +1,44 @@
 //Game Choice - Rounds(Rogue-Like-CardBuilder Game)
 
+//ArrayList for all objects 
 ArrayList<Player> player = new ArrayList<>(); 
 ArrayList<Projectiles> projectile = new ArrayList<Projectiles>(); 
 ArrayList<Card> cards = new ArrayList<Card>(); 
 ArrayList<Block> blocks = new ArrayList<Block>(); 
 ArrayList<CollidableObject> objects = new ArrayList<CollidableObject>(); 
+
+//Player p created 
 Player p;  
+
 //Card to track selected Card
 Card selectedCard = null;
 
-
-
+//movement boolean variables 
 boolean up, down, left, right, jumpKey; 
+//deciding gamestate 
 String gameState = "playing"; 
 
 //Images
 PImage cross; 
 
-
 void setup() {
   size(1100,800);
   
-   p = new Player(); // Initialize the Player object
+  p = new Player(); // Initialize the Player object
   player.add(p); // Add the Player to the player list
-  objects.add(p); // Add the Player to the objects list
- // playerCount(); 
-  
+ 
+   //CrossHair 
   imageMode(CENTER); 
   cross = loadImage("crosshair.png");
   
+  //Cards
   cards.add(new Card("Chemistry", "Bottles of Chemicals ", width / 2+200, 600));
   cards.add(new Card("Computer Science", " ", width / 2 - 400, 600));
   cards.add(new Card("Trigonometry", " ", width / 2 + 800, 600));
   cards.add(new Card("Game Development", " ", width / 2 + 500, 1100));
   cards.add(new Card("Artificial Intelligence", " ", width / 2 - 100, 1100));
   
+  //Map 
   rectMode(CENTER); 
   playerCross(); 
   fullScreen();
@@ -47,34 +51,91 @@ public void draw() {
   //Change//Test
   background(50);
 
-    //Switch Statement to swap the screens 
-    switch(gameState) {
-      case "playing":
+
+  switch (gameState) {
+    case "playing":
       drawMap(); 
       handleCollisions(); 
       handleProjectileCollisions(); 
       playerDraw();
-      drawProjectiles(); 
+      drawProjectiles();
       
-      if(!p.alive()){ 
-          gameState = "roundend"; 
+      if (!p.alive()) { 
+        gameState = "roundend";
       } 
       break;
       
-      case "roundend":
-        roundEnd();
-        gameState = "selectcards";
-        break;
+    case "roundend":
+      roundEnd();
+      gameState = "selectcards";
+      break;
+      
+    case "selectcards":
+    //Had to remove clear Screen because it also removes the card and images
+      //clearScreen();
+      roundEnd(); 
+      cardSelection();
+      previewCard();
+      break;
+  }
+    ////Switch Statement to swap the screens 
+    //switch(gameState) {
+    //  case "playing":
+    //  drawMap(); 
+    //  handleCollisions(); 
+    //  handleProjectileCollisions(); 
+    //  playerDraw();
+    //  drawProjectiles(); 
+   //if(p.alive()) {
+   //   drawMap();
+   //   handleCollisions();
+   //   handleProjectileCollisions();
+   //   playerDraw();
+   //   drawProjectiles(); 
+   //}else {
+   //  roundEnd();
+   //  cardSelection();
+   //  previewCard(); 
+   //} 
+   
+      //roundEnd(); 
+      //cardSelection();
+      //previewCard(); 
+    //  if(!p.alive()){ 
+    //      gameState = "roundend"; 
+    //  } 
+    //  break;
+      
+    //  case "roundend":
+    //    roundEnd();
+    //    gameState = "selectcards";
+    //    break;
         
-       case "selectcards":
-         clearScreen();
-         cardSelection();
-         previewCard();
-         break; 
-    }
+    //   case "selectcards":
+    //     clearScreen();
+    //     cardSelection();
+    //     previewCard();
+    //     break; 
+    //}
+    
+    //text( ""+p.canJump, 100,100);
+    //TESTING
+  //if(gameState.equals("selectcards")){
+  //  for(Card c: cards) {
+  //    if(c.underCursor()){
+  //      selectedCard = c; 
+  //      previewCard();
+  //      //gameState = "playing"; 
+  //      //gameScreen(); 
+  //      break; 
+  //    } 
+  //  } 
+  //}
+  //selectedCard = cards.get(1);
+  //previewCard();
 }
 
-
+//Collision Method for all collidable objects, blocks and for wall jumps 
 public void handleCollisions()
 {
   for(CollidableObject co: objects)
@@ -82,10 +143,12 @@ public void handleCollisions()
       co.bounce( b.sideHitBy( co ), b );
 }
 
+//Collision Method for Projectiles
 public void handleProjectileCollisions() {
   for(int i = projectile.size()-1; i >= 0; i--) {
     Projectiles pjs = projectile.get(i);
     for(Player p: player) {
+      //For colliding with player 
       if(pjs.caughtPlayer()){
         p.damage(100);
         projectile.remove(i); 
@@ -104,6 +167,7 @@ public void handleProjectileCollisions() {
   }
 } 
 
+//Method for clearing the screen 
 public void clearScreen() {
   player.clear();
   projectile.clear();
@@ -111,12 +175,14 @@ public void clearScreen() {
   blocks.clear();
   objects.clear();
   
-  background(50);
 } 
+
+//Game boolean control 
 public boolean game() {
   return true; 
 } 
 
+//Default game screen 
 public void gameScreen() {
   //Resets the player and hte map
   p = new Player();
@@ -124,13 +190,13 @@ public void gameScreen() {
   objects.add(p);
   map1();
   border(); 
-  
-  //background(50); 
 } 
-//Boolean to ensure that player will not be shown in cardScreen to reduce memory
+
+//boolean for card selection to begin 
 public boolean cardScreen() {
   return true; 
 } 
+
 //Card Sketch
 public void cardSelection() {
   if(cardScreen()) {
@@ -172,20 +238,12 @@ public void mouseMoved() {
   }
 }
 
-public void drawScore() {
-  //Top Right Corner of Screen
-  //Functionality similar to the health Meter, but it only increments one when a round is over 
-  
-} 
-
-
 //Player CrossHair 
 public void playerCross() { 
-  //stroke(0); 
   cursor(cross, mouseX, mouseY);
-  //image(cross, mouseX, mouseY, 50,50); 
 } 
 
+//The red triangle indicator isnside of player 
 public void directionIndicator() {
   for(int i = 0; i < player.size(); i++) {
     Player p = player.get(i); 
@@ -204,6 +262,7 @@ public void directionIndicator() {
   } 
 } 
 
+//Drwas player and the indicator 
 public void playerDraw() { 
   for(int i = 0; i < player.size(); i++) {
     p.drawPlayer(); 
@@ -215,6 +274,7 @@ public void playerDraw() {
   directionIndicator();
 } 
 
+//Draws projectile 
 public void drawProjectiles() { 
   for(int i = 0; i < projectile.size(); i++) {
     Projectiles ps = projectile.get(i);
@@ -224,7 +284,7 @@ public void drawProjectiles() {
 
 //Spawns Projectiles
 public void mouseClicked() { 
-  
+  println(gameState);
   //Card Selection Check
   if(gameState.equals("selectcards")){
     for(Card c: cards) {
@@ -281,13 +341,10 @@ public void previewCard() {
     }
     if (image != null) {
       imageMode(CORNER);
-      image(image, width - 100, 20, 80, 80); // Draw the image at the top right corner in a smaller size
+      image(image, width - 100, 40, 80, 80); // Draw the image at the top right corner in a smaller size
     }
   }
       
-} 
-
-public void startingScreen() { 
 } 
 
 
@@ -306,6 +363,7 @@ public void roundEnd() {
     circle(width/2+300, height/2-425,200);
     
     cardScreen(); 
+    gameState = "selectcards"; 
     
 } 
 //Method for drawin the map based on the arraylist 
@@ -318,6 +376,7 @@ public void drawMap() {
   
 } 
 
+//Method for the border blocks 
 public void border() {
   int borderColor = color(255,0,0); 
   //Top
@@ -334,6 +393,8 @@ public void border() {
   
   
 }
+
+//Method for the first map 
 public void map1() {
   int blockColor = color(213, 255, 246); 
   //Side
@@ -365,7 +426,7 @@ public void keyPressed()
   if( key == 'a' || key == 'A' || keyCode == LEFT )  left = true;
   if( key == 'd' || key == 'D' || keyCode == RIGHT ) right = true;
   
-  if( key == ' ' && p.canJump )
+  if( key == ' ')
     p.jump();
 }
 

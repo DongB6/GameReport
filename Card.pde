@@ -15,11 +15,6 @@ class Card {
   int draws;
   int actions;
   
-  
-  
-  
-  //Cards are in Main as of now, will move to Card. 
-  
   //Card Constructor 
   public Card(String title, String text, float xPos, float yPos) { 
     this.title = title;
@@ -39,7 +34,7 @@ class Card {
   } 
   
   
-  //Card Constructor 
+  //#2 Card Constructor 
   public Card() {
     imageMode(CENTER); 
     chem = loadImage("chem.jpg");
@@ -70,32 +65,7 @@ class Card {
     rect(xPos - cardXSize / 2, yPos() - cardYSize / 2, cardXSize, cardYSize, 50);
     image(image, xPos-175, yPos()-200, 300, 200);     
   } 
-  
-  /*
-  public void drawCards() {
-     //Setup for Cards
-    fill(255);
-    stroke(255,0,0);
-    strokeWeight(4);
-     
-    //New Format of 3 - 2
-    
-    rect(width/2-200,100,cardXSize,cardYSize,50); 
-    image(chem, width/2-25, 225, 300, 200); 
-  
-    rect(width/2- 800,100,cardXSize,cardYSize,50);
-    image(comp, width/2-625, 225, 300,200); 
-    
-    rect(width/2 + 400,100,cardXSize,cardYSize,50);
-    image(trig, width/2+575, 225, 300, 200); 
-    
-    rect(width/2+100, 600, cardXSize, cardYSize,50); 
-    image(gameDev, width/2+275,725, 300,200); 
-    
-    rect(width/2-500,600,cardXSize,cardYSize,50); 
-    image(ai, width/2-325, 725, 300,200); 
-  } 
-  */
+ 
   //Mouse Hover Over Card Overlay Effect 
   public boolean underCursor() {
     if(mouseX < xPos + cardXSize/2 && mouseX > xPos - cardXSize/2 
